@@ -14,6 +14,12 @@ jobs:
           New-Item -Path "D:\link subscribe youtube channel" -ItemType Directory -Force
           New-Item -Path "D:\Script" -ItemType Directory -Force
           Write-Host "Directories created"
+          
+          # DÃ©finir le nom du RDP basÃ© sur le repository GitHub
+          $repoFullName = "${{ github.repository }}"
+          $repoName = $repoFullName.Split('/')[-1]
+          [System.Environment]::SetEnvironmentVariable('RDP_NAME', $repoName, 'Machine')
+          Write-Host "RDP Name set to: $repoName"
 
       - name: Configure RDP Settings
         run: |
@@ -408,9 +414,9 @@ jobs:
               $torBatchContent = "@echo off`ncd /d `"C:\Tor Browser\Browser`"`nstart firefox.exe"
               $torBatchContent | Out-File -FilePath "$desktopPath\Tor Browser.bat" -Encoding ASCII -Force
               
-              # CrÃ©er launcher pour le Dashboard (serveur tracking)
-              $dashboardContent = "@echo off`ncd /d D:\Script\RDP-Scripts`nstart `"Dashboard Server`" cmd /k python rdp_tracker.py"
-              $dashboardContent | Out-File -FilePath "$desktopPath\Launch-Dashboard.bat" -Encoding ASCII -Force
+              # CrÃ©er launcher pour le Tracker en arriÃ¨re-plan
+              $trackerContent = "@echo off`ncd /d D:\Script\RDP-Scripts`nstart `"RDP Tracker`" /min cmd /k python start_tracker_background.py"
+              $trackerContent | Out-File -FilePath "$desktopPath\Start-Tracker.bat" -Encoding ASCII -Force
           }
           
           Write-Host "Desktop launchers created in all user desktops"
